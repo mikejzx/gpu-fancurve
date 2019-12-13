@@ -20,7 +20,16 @@
 #include <memory>   // std::unique_ptr
 #include <array>    // std::array
 
+// Includes for getting the home directory.
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
+
+#define CMD_FAIL -1
 #define CMD_SUCCESS 0 
+#define CMD_HELP 1
+#define DEFAULT_CONFPATH_DISPLAY "~/.config/gpu-fancurve.conf" // The config path that we show in error, and help page.
+#define DEFAULT_CONFPATH_SUFFIX "/.config/gpu-fancurve.conf" // This concat'd to /home/<user>/
 
 int  parse_cmd   (const int,  char**); // Parses command line arguments.
 bool parse_config(const std::string&); // Parse the input configuration file.
@@ -31,10 +40,14 @@ unsigned query_gpu_temp();
 // Tells the user to pass --help
 inline void print_help_stuff() { std::cout << "Pass --help for help." << std::endl; }
 
-static std::string filepath = "./fan.config";
+static std::string filepath = "";
 static std::vector<unsigned> points_temp, points_perc;
 static unsigned points_count = 0;
 static bool verbose = false;
+static bool custom_conffile = false;
+
+// The default path for the configuration file.
+static std::string default_confpath;
 
 // Entry point.
 int main(int argc, char* argv[])
@@ -42,15 +55,33 @@ int main(int argc, char* argv[])
 	// Print out a good old title to really annoy everyone.	
 	std::cout << "\033[1;35m -- -- mikejzx's NVIDIA Fan Curve Controller for Linux -- -- \033[0m" << std::endl;
 	std::cout << "\033[1;33m ----- https://mikejzx.github.io ----- \033[0m" << std::endl;
-	std::cout << "Running..." << std::endl;
 
-	if (parse_cmd(argc, argv) != CMD_SUCCESS // Parse command-line  args.
-		|| parse_config(filepath) != true    // Parse configuration file.
+	// Get the default file path at ~/.config/gpu-fancurve.conf
+	const char* home_dir = getenv("HOME");
+	if (home_dir == NULL)
+	{
+		// $HOME variable was null, get the home directory alternatively.
+		home_dir = getpwuid(getuid())->pw_dir;
+	}
+	default_confpath = home_dir + std::string(DEFAULT_CONFPATH_SUFFIX);
+	filepath = default_confpath;
+
+	// Try parse command-line args.
+	int cmd_returned = parse_cmd(argc, argv);
+
+	// If user passed help, just return.
+	if (cmd_returned == CMD_HELP) { return 0; }
+
+	// Check if commands were legal.
+	if (cmd_returned == CMD_FAIL        // Parsed command-line  args.
+		|| parse_config(filepath) != true // Parse configuration file.
 	)
 	{
 		std::cout << "Aborting..." << std::endl;
 		return -1;
 	}
+
+	std::cout << "Running..." << std::endl;
 	
 	// Allow user-defined fan control of the GPU
 	std::string no_output = " > /dev/null"; // Great Unix trick to remove output of a command.
@@ -139,7 +170,14 @@ bool parse_config(const std::string& path)
 	file.open(path);
 	if (!file.is_open())
 	{
-		std::cout << "Error opening file at '" << path << "'. Check that the file exists." << std::endl;
+		if (custom_conffile)
+		{
+			std::cout << "Error opening custom config file at '" << path << "'. Check that the file exists." << std::endl;
+		}
+		else
+		{
+			std::cout << "The config file does not exist. Please create the file '" << DEFAULT_CONFPATH_DISPLAY << "' with the correct format.\nPass the --help option for more information." << std::endl;
+		}
 		return false;
 	}
  
@@ -204,17 +242,22 @@ int parse_cmd(const int argc, char* argv[])
 		|| strcmp(argv[1], "/h") == 0)
 	{
 		const char* indent = "        ";
-		std::cout << std::endl << "mikejzx's NVIDIA Fan Controller Help" << std::endl;
-		std::cout << "Arguments:" << std::endl << std::endl;
+		std::cout << std::endl << "mikejzx's NVIDIA Fan Controller Help" << std::endl << std::endl;
+		std::cout << "1.0: CONFIG FILE:" << std::endl;
+		std::cout << "The configuration file is NOT created by the program, the user must create it manually. The default path of this file is at '" << DEFAULT_CONFPATH_DISPLAY << "'." << std::endl;
+		std::cout << "An example configuration file is provided in the repository at https://github.com/mikejzx/linux-nvidia-fan-curve" << std::endl << std::endl;
+
+		std::cout << "2.0: ARGUMENTS:" << std::endl << std::endl;
 		std::cout << "    -f, --config-path" << std::endl;
 		std::cout << indent << "Specifies the location of the configuration path." << std::endl;
-		std::cout << indent << "By default the program checks in the current directory." << std::endl << std::endl;
+		std::cout << indent << "By default the program checks in the current directory. (See '1.0: CONFIG FILE', above for more information.)" << std::endl << std::endl;
 
 		std::cout << "    -v, --verbose" << std::endl;
 		std::cout << indent << "Increase verbosity; i.e: show the fan speed as it changes." << std::endl << std::endl;
 
 		std::cout << "    -h, --help" << std::endl;
 		std::cout << indent << "Displays this help information." << std::endl << std::endl;
+		return CMD_HELP;
 	}
 
 	// Argument handler loop
@@ -230,11 +273,12 @@ int parse_cmd(const int argc, char* argv[])
 				// Not enough arguments.
 				std::cout << "Missing parameters." << std::endl;
 				print_help_stuff();
-				return -1;
+				return CMD_FAIL;
 			}
 
 			// Assign the config filepath.
 			filepath = std::string(argv[i + 1]);
+			custom_conffile = true;
 		}
 	
 		// Verbose mode
