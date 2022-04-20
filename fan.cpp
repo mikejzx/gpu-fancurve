@@ -84,9 +84,12 @@ int main(int argc, char* argv[])
 	std::cout << "Running..." << std::endl;
 	
 	// Allow user-defined fan control of the GPU
+	system(std::string("nvidia-settings -q gpus -q fans").c_str());
+	std::cout << std::endl << "Controlling fans on GPU-0" << std::endl;
 	std::string no_output = " > /dev/null"; // Great Unix trick to remove output of a command.
 	system(std::string("nvidia-settings -a [gpu:0]/GPUFanControlState=1" + no_output).c_str());	
-	std::string cmd = std::string("nvidia-settings -a [fan:0]/GPUTargetFanSpeed=");
+	std::string cmd = std::string("nvidia-settings -a [fan]/GPUTargetFanSpeed[GPU-0]="); //using [fan] instead of [fan:0] to control all fans when there are multiple, and now specifying the first GPU
+
 
 	// Get access to the 'ms' literal.
 	// (using namespace in local scope forever :D)
@@ -111,10 +114,10 @@ int main(int argc, char* argv[])
 		unlerped = std::isfinite(unlerped) ? unlerped : 1.0f;
 		cur_percent = lo + unlerped * (hi - lo); // Do a lerp with the unlerped value. (lerp = a + t * (b - a))
 
-		// Print the current fan speed.
+		// Print the current temperature and fan speed.
 		if (verbose)
 		{
-			std::cout << cur_percent << "% " << std::endl;
+			std::cout << cur_temp << "℃ " << cur_percent << "% " << std::endl;
 		}
 
 		// For debugging
