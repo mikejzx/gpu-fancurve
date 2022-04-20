@@ -84,7 +84,10 @@ int main(int argc, char* argv[])
 	std::cout << "Running..." << std::endl;
 	
 	// Allow user-defined fan control of the GPU
-	system(std::string("nvidia-settings -q gpus -q fans").c_str());
+	if (verbose)
+	{
+		system(std::string("nvidia-settings -q gpus -q fans").c_str());
+	}
 	std::cout << std::endl << "Controlling fans on GPU-0" << std::endl;
 	std::string no_output = " > /dev/null"; // Great Unix trick to remove output of a command.
 	system(std::string("nvidia-settings -a [gpu:0]/GPUFanControlState=1" + no_output).c_str());	
