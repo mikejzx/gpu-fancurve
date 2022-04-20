@@ -256,10 +256,10 @@ int parse_cmd(const int argc, char* argv[])
 		std::cout << "2.0: ARGUMENTS:" << std::endl << std::endl;
 		std::cout << "    -f, --config-path" << std::endl;
 		std::cout << indent << "Specifies the location of the configuration path." << std::endl;
-		std::cout << indent << "By default the program checks in the current directory. (See '1.0: CONFIG FILE', above for more information.)" << std::endl << std::endl;
+		std::cout << indent << "By default the program checks '" << DEFAULT_CONFPATH_DISPLAY << "'. (See '1.0: CONFIG FILE', above for more information.)" << std::endl << std::endl;
 
 		std::cout << "    -v, --verbose" << std::endl;
-		std::cout << indent << "Increase verbosity; i.e: show the fan speed as it changes." << std::endl << std::endl;
+		std::cout << indent << "Increase verbosity; i.e: show the temperature and fan speed as it changes." << std::endl << std::endl;
 
 		std::cout << "    -h, --help" << std::endl;
 		std::cout << indent << "Displays this help information." << std::endl << std::endl;
