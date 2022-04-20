@@ -1,3 +1,2 @@
 #!/bin/sh
-g++ fan.cpp -o ./fan -std=c++17
-./fan -f ./fan.config
+g++ fan.cpp -o ./gpu-fancurve -std=c++17
