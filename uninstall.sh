@@ -1,8 +1,8 @@
 #!/bin/bash
 echo "This script will stop any running instances of gpu-fancurve and remove:"
-echo "-The config file from ~/.config/gpu-fancurve.conf"
+echo "-The config file from $HOME/.config/gpu-fancurve.conf"
 echo "-The program from /usr/local/bin/gpu-fancurve"
-echo "-The autostart file from ~/.config/autostart/gpu-fancurve.desktop"
+echo "-The autostart file from $HOME/.config/autostart/gpu-fancurve.desktop"
 echo
 echo "**sudo rights are required and you will be prompted for your sudo password**"
 echo
@@ -28,8 +28,8 @@ pkill gpu-fancurve
 sudo rm /usr/local/bin/gpu-fancurve
 
 #remove config file
-rm ~/.config/gpu-fancurve.conf
+rm $HOME/.config/gpu-fancurve.conf
 
 #remove autostart
-rm ~/.config/autostart/gpu-fancurve.desktop
+rm $HOME/.config/autostart/gpu-fancurve.desktop
 

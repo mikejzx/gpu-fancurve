@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "This script will copy the config file to ~/.config/gpu-fancurve.conf, copy the program to /usr/local/bin, and set it to run automatically when you logon."
+echo "This script will copy the config file to $HOME/.config/gpu-fancurve.conf, copy the program to /usr/local/bin, and set it to run automatically when you logon."
 echo
 echo "**sudo rights are required and you will be prompted for your sudo password**  If you just want to run gpu-fancurve manually or don't have sudo rights, please see README.md"
 echo
@@ -59,36 +59,36 @@ then
    exit
 fi
 
-#Look for gpu-fancurve.conf and copy it to ~/.config/gpu-fancurve.conf
+#Look for gpu-fancurve.conf and copy it to $HOME/.config/gpu-fancurve.conf
 #If it doesn't exist, ask the user if they want to use the example config
-echo "Copying gpu-fancurve.conf to ~/.config/gpu-fancurve.conf..."
+echo "Copying gpu-fancurve.conf to $HOME/.config/gpu-fancurve.conf..."
 if [ -f "gpu-fancurve.conf" ]
 then
-   cp gpu-fancurve.conf ~/.config/
+   cp gpu-fancurve.conf $HOME/.config/
 else
    while true; do
       read -p "Couldn't find gpu-fancurve.conf.  Use example configuration? (YES/no) " prompt
       if [ "${prompt,,}" == "yes" ] || [ "${prompt,,}" == "y" ] || [ "${prompt,,}" == "" ]
       then
-         cp gpu-fancurve.conf.example ~/.config/gpu-fancurve.conf
+         cp gpu-fancurve.conf.example $HOME/.config/gpu-fancurve.conf
          break
       elif [ "${prompt,,}" == "no" ] || [ "${prompt,,}" == "n" ]
       then
-         echo "You will need to setup a config file at ~/.config/gpu-fancurve.conf before gpu-fancurve can run automatically."
+         echo "You will need to setup a config file at $HOME/.config/gpu-fancurve.conf before gpu-fancurve can run automatically."
          echo
          break
       fi
       echo "Sorry, I didn't understand that. Please type yes or no"
    done
 fi
-if ! [ -f "~/.config/gpu-fancurve.conf" ]
+if ! [ -f "$HOME/.config/gpu-fancurve.conf" ]
 then
-   echo "Couldn't create ~/.config/gpu-fancurve.conf.  Please create the file manually using the example file as a guide."
+   echo "Couldn't create $HOME/.config/gpu-fancurve.conf.  Please create the file manually using the example file as a guide."
 fi
 
 #Setup gpu-fancurve to run on logon
-echo "Creating ~/.config/autostart/gpu-fancurve.desktop so gpu-fancurve will start at logon"
-cat << EOF > ~/.config/autostart/gpu-fancurve.desktop
+echo "Creating $HOME/.config/autostart/gpu-fancurve.desktop so gpu-fancurve will start at logon"
+cat << EOF > $HOME/.config/autostart/gpu-fancurve.desktop
 [Desktop Entry]
 Type=Application
 Name=gpu-fancurve

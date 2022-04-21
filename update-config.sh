@@ -1,8 +1,8 @@
 #!/bin/bash
 if [ -f "gpu-fancurve.conf" ]
 then
-   echo "Copying ./gpu-fancurve.conf to ~/.config/gpu-fancurve.conf..."
-   cp ./gpu-fancurve.conf ~/.config/
+   echo "Copying ./gpu-fancurve.conf to $HOME/.config/gpu-fancurve.conf..."
+   cp ./gpu-fancurve.conf $HOME/.config/
 else
    if [ -f "gpu-fancurve.conf.example" ]
    then
@@ -10,8 +10,8 @@ else
          read -p "Couldn't find gpu-fancurve.conf.  Use example configuration? (YES/no) " prompt
          if [ "${prompt,,}" == "yes" ] || [ "${prompt,,}" == "y" ] || [ "${prompt,,}" == "" ]
          then
-            echo "Copying gpu-fancurve.conf.example to ~/.config/gpu-fancurve.conf..."
-            cp gpu-fancurve.conf.example ~/.config/gpu-fancurve.conf
+            echo "Copying gpu-fancurve.conf.example to $HOME/.config/gpu-fancurve.conf..."
+            cp gpu-fancurve.conf.example $HOME/.config/gpu-fancurve.conf
             break
          elif [ "${prompt,,}" == "no" ] || [ "${prompt,,}" == "n" ]
          then
@@ -25,9 +25,9 @@ else
       exit
    fi
 fi
-if ! [ -f "~/.config/gpu-fancurve.conf" ]
+if ! [ -f "$HOME/.config/gpu-fancurve.conf" ]
 then
-   echo "Couldn't create ~/.config/gpu-fancurve.conf.  Please create the file manually using the example file as a guide."
+   echo "Couldn't create $HOME/.config/gpu-fancurve.conf.  Please create the file manually using the example file as a guide."
 fi
 
 echo "Killing and restarting gpu-fancurve..."
