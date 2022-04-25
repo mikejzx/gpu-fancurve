@@ -1,11 +1,15 @@
-# gpu-fancurve
-This simple program will adjust the GPU's fan speed based on its temperature.  A configuration file is used to determine the "points" at which the fan speeds should be.
+# gpu-fancurve (for NVIDIA cards)
+This simple program adjusts an NVIDIA GPU's fan speed based on its temperature.
+A configuration file is used to define points in the fan speed curve.
 
-Note that only <b>a single GPU</b> is supported. This will not adjust speeds of any but the first GPU in the computer.
+Note that this program supports only <b>a single GPU</b>.
+Therefore the program will only adjust the fan speeds of the <i>first GPU</i> that it finds in the computer.
 
-To customize the fan curve, copy gpu-fancurve.conf.example to gpu-fancurve.conf.  Please ensure the temperatures in the curve points <i>rise as it approaches the end of the file.</i>
+To customize the fan curve, copy gpu-fancurve.conf.example to gpu-fancurve.conf.
+Please ensure the temperatures in the curve points <i>rise as it approaches the end of the file.</i>
 
-Run `make install` to setup the program in /usr/local/bin and set it to start automatically when you log in.  If there is a gpu-fancurve.conf file in the same folder as the install.sh script then it will use that, otherwise you will be asked if you want to use the example config.
+Run `make install` to setup the program in /usr/local/bin and set it to start automatically when you log in.
+If there is a gpu-fancurve.conf file in the same folder as the install.sh script then it will use that, otherwise you will be asked if you want to use the example config.
 
 If you want to update the curve, make the changes in gpu-fancurve.conf and run `make update_config`
 
@@ -20,7 +24,8 @@ The command below must be run, along with a reboot in order for the program to f
 ### Config file
 
 The configuration file is NOT created by the program, the user must create it manually.<br>
-The default path of this file is at `~/.config/gpu-fancurve.conf`.  An example configuration file is provided with the source code.
+The default path of this file is at `~/.config/gpu-fancurve.conf`.
+An example configuration file is provided with the source code.
 
 ### Arguments
 <ul>
