@@ -96,7 +96,7 @@ Exec=gpu-fancurve
 EOF
 
 echo "Setting the cool-bits flag in the Nvidia drivers..."
-sudo nvidia-xconfig -a --cool-bits=28 --allow-empty-initial-configuration
+sudo nvidia-xconfig -a --cool-bits=4 --allow-empty-initial-configuration
 
 echo "Done!  Please reboot for the cool-bits change and to allow gpu-fancurve to autostart."
 
